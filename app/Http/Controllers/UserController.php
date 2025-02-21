@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
 {
-    //
-    function users(){
-        $users=  DB::select("SELECT * FROM `users`;");
-        return view('users',['users'=>$users]);
+    public function getUser()
+    {
+        $response = Http::withoutVerifying()->get('https://jsonplaceholder.typicode.com/users');
+
+        // Decode JSON into an array of objects
+        $data = json_decode($response->body());
+
+        // Pass the data to the Blade template
+        return view('users', ['data' => $data]);
     }
 }
